@@ -1,0 +1,92 @@
+---
+- name: Deploy via Terraform
+  hosts: localhost
+  become: false
+  vars:
+    tf_source: "tf_proj/"
+    tf_backend_config:
+      bucket: ""
+      region: ""
+      key: "andrew.tfstate"
+      access_key: ""
+      secret_key: ""
+    tf_vars:
+      vpc_name: ""
+      user_name: ""
+      cidr_block: "10.101.1.0/24"
+      my_email_address: ""
+      deleteby: false
+      vpc_cidr: "10.101.1.0/24"
+      image: ami-0ad0754999b877d04
+      instance_type: c5.xlarge
+      awskey: ""
+  tasks:
+ #   - name: Create temporary directory for terraform files
+ #     ansible.builtin.tempfile:
+ #       state: directory
+ #       suffix: build
+ #     register: tf_dir
+ #     notify:
+ #       - "Delete tf dir"
+
+ #     ansible.builtin.copy:
+ #       src: "{{ tf_source }}"
+ #       dest: "{{ tf_dir.path }}"
+
+ #   - name: Print directory location
+ #     ansible.builtin.debug:
+ #       var: tf_dir
+
+    - name: Create terraform provider.tf file
+      ansible.builtin.template:
+        src: provider.tf.j2
+        dest: "{{ tf_source }}/provider.tf"
+        mode: "0644"
+      tags:
+        - deploy
+        - destroy
+      notify:
+        - "Remove provider.tf"
+
+    - name: Run terraform
+      cloud.terraform.terraform:
+        project_path: "{{ tf_source }}"
+        variables: "{{ tf_vars }}"
+        backend_config: "{{ tf_backend_config }}"
+        state: present
+        force_init: true
+      tags:
+        - deploy
+
+    - name: Get terraform output
+      cloud.terraform.terraform_output:
+        project_path: "{{ tf_source }}"
+      register: tf_output
+      tags:
+        - deploy
+        - destroy
+      ignore_errors: true
+
+    - name: Print tf output
+      ansible.builtin.debug:
+        var: tf_output
+      tags:
+        - deploy
+        - destroy
+      when: tf_output is defined
+
+    - name: Destroy terraform
+      cloud.terraform.terraform:
+        project_path: "{{ tf_source }}"
+        variables: "{{ tf_vars }}"
+        backend_config: "{{ tf_backend_config }}"
+        state: absent
+      tags:
+        - destroy
+
+
+  handlers:
+    - name: Remove provider.tf
+      ansible.builtin.file:
+        path: "{{ tf_source }}/provider.tf"
+        state: absent
