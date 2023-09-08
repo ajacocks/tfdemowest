@@ -13,10 +13,10 @@
     tf_vars:
       vpc_name: ""
       user_name: ""
-      cidr_block: "10.101.1.0/24"
+      cidr_block: ""
       my_email_address: ""
       deleteby: false
-      vpc_cidr: "10.101.1.0/24"
+      vpc_cidr: ""
       image: ami-0ad0754999b877d04
       instance_type: c5.xlarge
       awskey: ""
@@ -105,6 +105,17 @@
       tags:
         - deploy
 
+    - name: Run terraform init
+      cloud.terraform.terraform:
+        project_path: "{{ tf_dir.path }}"
+        variables: "{{ tf_vars }}"
+        backend_config: "{{ tf_backend_config }}"
+        state: present
+        force_init: true
+      check_mode: true
+      tags:
+        - destroy
+
     - name: Get terraform output
       cloud.terraform.terraform_output:
         project_path: "{{ tf_dir.path }}"
@@ -117,6 +128,7 @@
     - name: Print tf output
       ansible.builtin.debug:
         var: tf_output
+
       tags:
         - deploy
         - destroy
@@ -124,7 +136,7 @@
 
     - name: Destroy terraform
       cloud.terraform.terraform:
-        project_path: "{{ tf_source }}"
+        project_path: "{{ tf_dir.path }}"
         variables: "{{ tf_vars }}"
         backend_config: "{{ tf_backend_config }}"
         state: absent
