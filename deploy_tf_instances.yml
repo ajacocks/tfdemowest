@@ -3,11 +3,11 @@
   hosts: localhost
   become: false
   vars:
-    tf_source: "tf_proj/"
+    tf_source: "https://github.com/dcostakos/tfdemowest_terraform.git"
     tf_backend_config:
       bucket: ""
       region: ""
-      key: "andrew.tfstate"
+      key: ""
       access_key: ""
       secret_key: ""
     tf_vars:
@@ -16,41 +16,50 @@
       cidr_block: "10.101.1.0/24"
       my_email_address: ""
       deleteby: false
-      vpc_cidr: "10.101.1.0/24"
+      vpc_cidr: "4"
       image: ami-0ad0754999b877d04
       instance_type: c5.xlarge
       awskey: ""
   tasks:
- #   - name: Create temporary directory for terraform files
- #     ansible.builtin.tempfile:
- #       state: directory
- #       suffix: build
- #     register: tf_dir
- #     notify:
- #       - "Delete tf dir"
+    - name: Create temporary directory for terraform files
+      ansible.builtin.tempfile:
+        state: directory
+        suffix: build
+      register: tf_dir
+      notify:
+        - "Remove tf_dir"
+      tags:
+        - destroy
+        - deploy
 
- #     ansible.builtin.copy:
- #       src: "{{ tf_source }}"
- #       dest: "{{ tf_dir.path }}"
+    - name: Print directory location
+      ansible.builtin.debug:
+        var: tf_dir
+      tags:
+        - destroy
+        - deploy
 
- #   - name: Print directory location
- #     ansible.builtin.debug:
- #       var: tf_dir
+    - name: Clone terraform git repo
+      ansible.builtin.git:
+        repo: https://github.com/dcostakos/tfdemowest_terraform.git
+        dest: "{{ tf_dir.path }}"
+        version: main
+      tags:
+        - destroy
+        - deploy
 
     - name: Create terraform provider.tf file
       ansible.builtin.template:
-        src: provider.tf.j2
-        dest: "{{ tf_source }}/provider.tf"
+        src: "{{ tf_provider | default('provider.tf.j2') }}"
+        dest: "{{ tf_dir.path }}/provider.tf"
         mode: "0644"
       tags:
         - deploy
         - destroy
-      notify:
-        - "Remove provider.tf"
 
     - name: Run terraform
       cloud.terraform.terraform:
-        project_path: "{{ tf_source }}"
+        project_path: "{{ tf_dir.path }}"
         variables: "{{ tf_vars }}"
         backend_config: "{{ tf_backend_config }}"
         state: present
@@ -58,9 +67,47 @@
       tags:
         - deploy
 
+    - name: Run terraform state list
+      ansible.builtin.shell: >
+        terraform state list
+      args:
+        chdir: "{{ tf_dir.path }}"
+      changed_when: false
+      register: tf_state_list
+      tags:
+        - deploy
+
+    - name: Run terraform state show
+      ansible.builtin.shell: >
+        terraform show -json
+      args:
+        chdir: "{{ tf_dir.path }}"
+      tags:
+        - deploy
+      register: tf_state_show
+      changed_when: false
+
+    - name: Set state variables
+      ansible.builtin.set_fact:
+        state_output: "{{ tf_state_show.stdout }}"
+      tags:
+        - deploy
+
+    - name: Debug tf_state_list
+      ansible.builtin.debug:
+        var: tf_state_list
+      tags:
+        - deploy
+
+    - name: Debug tf_state_show
+      ansible.builtin.debug:
+        var: state_output
+      tags:
+        - deploy
+
     - name: Get terraform output
       cloud.terraform.terraform_output:
-        project_path: "{{ tf_source }}"
+        project_path: "{{ tf_dir.path }}"
       register: tf_output
       tags:
         - deploy
@@ -86,7 +133,8 @@
 
 
   handlers:
-    - name: Remove provider.tf
+    - name: Remove tf_dir
       ansible.builtin.file:
-        path: "{{ tf_source }}/provider.tf"
+        path: "{{ tf_dir.path }}"
         state: absent
+      when: tf_dir is defined
