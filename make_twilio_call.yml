@@ -1,0 +1,27 @@
+---
+- name: Make a phone call using Twilio's API
+  hosts: localhost
+  become: false
+  vars:
+    twilio_sid: ""
+    twilio_token: ""
+    twilio_phone_number: ""
+  tasks:
+    - name: Make twilio phone call
+      ansible.builtin.uri:
+        url: "https://api.twilio.com/2010-04-01/Accounts/{{ twilio_sid }}/Calls.json"
+        user: "{{ twilio_sid }}"
+        password: "{{ twilio_token }}"
+        method: POST
+        body_format: "form-urlencoded"
+        body:
+          Url: "http://demo.twilio.com/docs/voice.xml"
+          From: "{{ twilio_phone_number }}"
+          To: "+16198402579"
+        return_content: true
+        status_code: [200, 201]
+      register: twilio_response
+
+    - name: Debug twilio response
+      ansible.builtin.debug:
+        var: twilio_response
