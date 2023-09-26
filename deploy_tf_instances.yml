@@ -39,6 +39,13 @@
         - destroy
         - deploy
 
+    - name: Print tf_vars
+      ansible.builtin.debug:
+        msg: "{{ aws_secret_key|default("undefined") }} -- {{ aws_secret_key_id|default("undefined id") }}"
+      tags:
+        - destroy
+        - deploy
+
     - name: Clone terraform git repo
       ansible.builtin.git:
         repo: https://github.com/dcostakos/tfdemowest_terraform.git
