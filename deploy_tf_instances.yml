@@ -8,8 +8,6 @@
       bucket: "{{ bucket }}"
       region: "{{ aws_region }}"
       key: "{{ tf_statefile }}"
-      access_key: "{{ AWS_ACCESS_KEY }}"
-      secret_key: "{{ AWS_SECRET_KEY }}"
     tf_vars:
       vpc_name: "{{ tf_vpc_name }}"
       user_name: "{{ user_name }}"
