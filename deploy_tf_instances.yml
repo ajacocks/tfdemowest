@@ -3,15 +3,13 @@
   hosts: localhost
   become: false
   vars:
-    aws_access_key_id: "{{ aws_access_key_id }}"
-    aws_secret_access_key: "{{ aws_secret_access_key }}"
     tf_source: "https://github.com/dcostakos/tfdemowest_terraform.git"
     tf_backend_config:
       bucket: "{{ bucket }}"
       region: "{{ aws_region }}"
       key: "{{ tf_statefile }}"
-      access_key: "{{ aws_access_key_id }}"
-      secret_key: "{{ aws_secret_access_key }}"
+      access_key: "{{ AWS_ACCESS_KEY }}"
+      secret_key: "{{ AWS_SECRET_KEY }}"
     tf_vars:
       vpc_name: "{{ tf_vpc_name }}"
       user_name: "{{ user_name }}"
@@ -43,7 +41,7 @@
 
     - name: Print tf_vars
       ansible.builtin.debug:
-        msg: "{{ aws_access_key_id }} -- {{ aws_secret_access_key }}"
+        msg: "{{ AWS_ACCESS_KEY }} -- {{ AWS_SECRET_KEY }}"
       tags:
         - destroy
         - deploy
