@@ -18,7 +18,5 @@ provider "aws" {
       DeleteBy  = var.deleteby
     }
   }
-  access_key = "{{ tf_backend_config.access_key }}"
-  secret_key = "{{ tf_backend_config.secret_key }}"
   region = "{{ tf_backend_config.region }}"
 }
