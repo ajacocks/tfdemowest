@@ -41,7 +41,7 @@
 
     - name: Print tf_vars
       ansible.builtin.debug:
-        msg: "{{ aws_secret_key|default("undefined") }} -- {{ aws_secret_key_id|default("undefined id") }}"
+        msg: "{{ aws_secret_key|default('undefined') }} -- {{ aws_secret_key_id|default('undefined id') }}"
       tags:
         - destroy
         - deploy
