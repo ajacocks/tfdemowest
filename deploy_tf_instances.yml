@@ -3,8 +3,8 @@
   hosts: localhost
   become: false
   vars:
-    aws_access_key_id: "{{ aws_access_key_id|default('undefined') }}"
-    aws_secret_access_key: "{{ aws_secret_access_key|default('undefined') }}"
+    aws_access_key_id: "{{ aws_access_key_id }}"
+    aws_secret_access_key: "{{ aws_secret_access_key }}"
     tf_source: "https://github.com/dcostakos/tfdemowest_terraform.git"
     tf_backend_config:
       bucket: "{{ bucket }}"
@@ -43,7 +43,7 @@
 
     - name: Print tf_vars
       ansible.builtin.debug:
-        msg: "{{ aws_secret_key|default('undefined') }} -- {{ aws_secret_key_id|default('undefined id') }}"
+        msg: "{{ aws_secret_key }} -- {{ aws_secret_key_id }}"
       tags:
         - destroy
         - deploy
