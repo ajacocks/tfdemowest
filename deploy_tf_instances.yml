@@ -43,7 +43,7 @@
 
     - name: Print tf_vars
       ansible.builtin.debug:
-        msg: "{{ aws_secret_key }} -- {{ aws_secret_key_id }}"
+        msg: "{{ aws_access_key_id }} -- {{ aws_secret_access_key }}"
       tags:
         - destroy
         - deploy
