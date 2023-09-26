@@ -37,13 +37,6 @@
         - destroy
         - deploy
 
-    - name: Print tf_vars
-      ansible.builtin.debug:
-        msg: "{{ AWS_ACCESS_KEY }} -- {{ AWS_SECRET_KEY }}"
-      tags:
-        - destroy
-        - deploy
-
     - name: Clone terraform git repo
       ansible.builtin.git:
         repo: https://github.com/dcostakos/tfdemowest_terraform.git
