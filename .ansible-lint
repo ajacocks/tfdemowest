@@ -1,0 +1,9 @@
+---
+parseable: true
+profile: safety
+mock_modules:
+  - cloud.terraform
+  - cloud.terraform.terraform
+  - cloud.terraform.terraform_output
+skip_list:
+  - run_once
