@@ -1,3 +1,5 @@
 ---
 collections:
   - name: cloud.terraform
+    version: 1.1.1
+    source: https://github.com/ansible-collections/cloud.terraform
