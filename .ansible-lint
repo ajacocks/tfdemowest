@@ -1,9 +1,5 @@
 ---
 parseable: true
 profile: production
-mock_modules:
-  - cloud.terraform.terraform
-  - cloud.terraform.terraform_output
-  - cloud.terraform.terraform_provider
 skip_list:
   - run-once
