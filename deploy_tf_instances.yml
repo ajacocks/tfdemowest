@@ -71,7 +71,7 @@
         data:
           machine_create_time: "{{ '%H:%M:%S' | strftime }}"
           vpc_create_time: "{{ '%H:%M:%S' | strftime }}"
-        run_once: true
+      run_once: true
       tags:
         - deploy
 
