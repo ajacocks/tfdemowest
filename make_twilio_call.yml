@@ -6,6 +6,7 @@
     twilio_sid: ""
     twilio_token: ""
     twilio_phone_number: ""
+    call_to: ""
   tasks:
     - name: Make twilio phone call
       ansible.builtin.uri:
@@ -17,7 +18,7 @@
         body:
           Url: "http://demo.twilio.com/docs/voice.xml"
           From: "{{ twilio_phone_number }}"
-          To: "+16198402579"
+          To: "{{ call_to }}"
         return_content: true
         status_code: [200, 201]
       register: twilio_response
