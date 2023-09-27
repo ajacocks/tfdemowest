@@ -9,4 +9,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Run ansible-lint
-        uses: ansible/ansible-lint@6.20.0
+        uses: ansible/ansible-lint@main
