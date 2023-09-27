@@ -65,6 +65,16 @@
       tags:
         - deploy
 
+    # Make the start time available to other playbooks
+    - name: Record the machine_create_time and vpc_create_time
+      ansible.builtin.set_stats:
+        data:
+          machine_create_time: "{{ '%H:%M:%S' | strftime }}"
+          vpc_create_time: "{{ '%H:%M:%S' | strftime }}"
+        run_once: true
+      tags:
+        - deploy
+
     - name: Run terraform state list
       ansible.builtin.shell: >
         terraform state list
