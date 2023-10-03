@@ -16,7 +16,7 @@
         method: POST
         body_format: "form-urlencoded"
         body:
-          Url: "https://raw.githubusercontent.com/dcostakos/tfdemowest/main/voice.xml"
+          Twiml: "<Response><Play>http://demo.twilio.com/docs/classic.mp3</Play></Response>"
           From: "{{ twilio_phone_number }}"
           To: "{{ call_to }}"
         return_content: true
