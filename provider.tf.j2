@@ -16,7 +16,7 @@ provider "aws" {
       CreatedBy   = var.created_by
       Contact     = var.my_email_address
       DeleteBy    = var.deleteby
-      Environment = var.environment
+      Environment = var.env_name
     }
   }
   region = "{{ tf_backend_config.region }}"
