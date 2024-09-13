@@ -161,6 +161,14 @@
       tags:
         - destroy
 
+    - name: Update a single inventory source
+      ansible.controller.inventory_source_update:
+        name: "AWS Source"
+        inventory: "AWS Inventory"
+        organization: jajcs.net
+      tags:
+        - deploy
+        - destroy
 
   handlers:
     - name: Remove tf_dir
