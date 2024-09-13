@@ -18,6 +18,7 @@
       vpc_cidr: "10.101.1.0/24"
       instance_type: t3a.small
       awskey: "{{ awskey }}"
+      environment: "{{ environment }}"
 
   tasks:
     - name: Debug awskey
