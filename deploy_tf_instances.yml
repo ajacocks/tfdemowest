@@ -25,6 +25,10 @@
       ansible.builtin.debug:
         var: awskey
 
+    - name: Debug environment
+      ansible.builtin.debug:
+        var: environment
+
     - name: Create temporary directory for terraform files
       ansible.builtin.tempfile:
         state: directory
