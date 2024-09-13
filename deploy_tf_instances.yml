@@ -18,16 +18,16 @@
       vpc_cidr: "10.101.1.0/24"
       instance_type: t3a.small
       awskey: "{{ awskey }}"
-      environment: "{{ environment }}"
+      env_name: "{{ env_name }}"
 
   tasks:
     - name: Debug awskey
       ansible.builtin.debug:
         var: awskey
 
-    - name: Debug environment
+    - name: Debug env_name
       ansible.builtin.debug:
-        var: environment
+        var: env_name
 
     - name: Create temporary directory for terraform files
       ansible.builtin.tempfile:
